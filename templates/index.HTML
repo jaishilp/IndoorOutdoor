@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Indoor_Outdoor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+    .w3-bar,h1,button {font-family: "Montserrat", sans-serif}
+    .fa-anchor,.fa-coffee {font-size:200px}
+    </style>
+  </head>
+<body>
+
+<!-- Navigation bar with links -->
+<div class="w3-bar w3-white w3-text-black">
+  <a href="#About Us" class="w3-hide-small w3-bar-item w3-button w3-mobile w3-medium w3-right" style="margin-top:10px;">About Us</a>
+  <a href="#Schedule Lock Times" class="w3-hide-small w3-bar-item w3-button w3-mobile w3-medium w3-right" style="margin-top:10px;">Schedule Lock Times</a>
+  <a href="#Image Recognition" class="w3-hide-small w3-bar-item w3-button w3-mobile w3-medium w3-right" style="margin-top:10px;">Image Recognition</a>
+  <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-medium w3-hide-large" style="margin-top:10px;" onclick="myFunction()">&#9776;</a>
+</div>
+
+<div id="demo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-small">
+  <a href="#About Us" class="w3-bar-item w3-button">About Us</a>
+  <a href="#Schedule Lock Times" class="w3-bar-item w3-button">Schedule Lock Times</a>
+  <a href="#Image Recognition" class="w3-bar-item w3-button">Image Recognition</a>
+</div>
+
+<!-- Header -->
+<header class="w3-container w3-gray w3-center" style="padding:128px 16px">
+  <h1 class="w3-margin w3-jumbo">INDOOR/OUTDOOR</h1>
+  <div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+     <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+</head>
+<body>
+  <img src="https://cdn.discordapp.com/attachments/924567598635556908/925915513996054528/IndoorXOutdoor_Logo_yinyang.png" alt="Indoor Outdoor"  style="width:50%;">
+
+</body>
+</html>
+    </div>
+</header>
+
+<!-- Image Recognition Grid -->
+<div class="w3-center w3-padding-32">
+      <h2 class="w3-wide w3-center">Image Recognition</h2>
+         <p class="w3-opacity w3-center"><i>Picture Ready</i></p><br>
+         <p class="w3-white w3-text-black w3-left-align">
+      </p>
+      <html>
+<body>
+
+<p>Upload The Best Picture of Your Pet</p>
+{% for message in get_flashed_messages(category_filter=["upload"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+
+<html>
+   <body>
+      <form action = "upload" method = "POST"
+         enctype = "multipart/form-data">
+         <input type = "file" name = "file" single/>
+         <input type = "submit"/>
+      </form>
+   </body>
+</html>
+
+</body>
+</html>
+    </div>
+<!-- Schedule lock time Grid -->
+<div class="w3-center w3-padding-32">
+      <h2 class="w3-wide w3-center">Schedule Lock Times</h2>
+         <p class="w3-opacity w3-center"><i>Choose Your Time Period</i></p><br>
+<!-- Start Time button -->
+<div>
+<html>
+<head>
+<br>
+<form action="start" method="post">
+    {% for message in get_flashed_messages(category_filter=["startTime"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+  <input type="text" name="start_time_input">
+  <br>
+  <input type="submit" value="SUBMIT" id="start">
+</form>
+<!-- End time button -->
+<div>
+<html>
+<head>
+<br>
+<form action="end" method="post">
+  {% for message in get_flashed_messages(category_filter=["endTime"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+  <input type="text" name="end_time_input">
+  <br>
+  <input type="submit" value="SUBMIT" id="end">
+</form>
+<!-- Type of Lock -->
+<div>
+<html>
+<head>
+<br>
+<form action="lock" method="post">
+  {% for message in get_flashed_messages(category_filter=["lockType"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+  <input type="text" name="lock_input">
+  <br>
+  <input type="submit" value="SUBMIT" id="lock">
+</form>
+<div>
+<html>
+<head>
+<br>
+<form action="data" method="post">
+     {% for message in get_flashed_messages(category_filter=["message"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+  <br>
+  <input type="submit" value="Click to View Saved Times" id="data">
+</form>
+<!-- About Us Grid -->
+<div class="w3-center w3-padding-32">
+      <h2 class="w3-wide w3-center">About Us</h2>
+         <p class="w3-opacity w3-center"><i></i></p>We are all seniors at Sacramento State University and this is our Senior Design Project. Our group consist of two Computer Engineers, Jaishil and Gustavo, and two Electrical and Electronic Engineers, Ciara and Armin. We all love our pets so we wanted to create a door that helps us keep them safe and give us a peace of mind when were are away. <br>
+         <p class="w3-white w3-text-black w3-left-align">
+      </p>
+    </div>
+<!-- Fourth Grid -->
+<div class="w3-row-padding w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-twothird">
+      <h1>How Our Product Came To Be</h1>
+      <h5 class="w3-padding-32"></h5>
+
+      <p class="w3-padding-32">The Covid-19 Pandemic has created a unique situation. The Pandemic forced people to stay home with their dogs/cats, allowing pet-owners the ability to spend more time with their animals, which in turn, meant more outside activities for animals that would otherwise be forced to stay inside while their Owners would be off commuting to work. The effect of this is seen in the uptick in Dog and Cat Adoptions/ Veterinary Visits nationwide. As we are entering into a post-Covid era where workers are expected to once again commute back to work, many dog/cat owners are forced to once again leave their pets at home unattended, reducing the quality of life that these sociable animals experienced during the Pandemic. Many dog/cat owners, feeling that they can’t provide the same level of companionship and care they provided during Covid, are actually opting to give their Pets back to shelters, which has only reduced the quality of life for these creatures, as many shelters that were empty during the Pandemic are now overflowing with unwanted dogs/cats, many of which are euthanized as a result. Our team recognizes this Societal Problem as an opportunity to keep Dog/Cat Owners closer to their pets and mitigate the tragedy that comes with kill-shelters, unfavorable wildlife interactions, and run-over pets. It is our expressed hope that by giving Petowners the convenience to monitor their Pet’s coming and goings remotely, that we can provide dogs and cats the freedoms that they got to experience during the Pandemic while also giving Pet-Owners the peace of mind in knowing that their animals are happy and safe.</p>
+    </div>
+
+    <div class="w3-third w3-center">
+      <img class="w3-image" src="https://images.unsplash.com/photo-1605001011156-cbf0b0f67a51?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1548&amp;q=80" alt="Photo by Jamie Street" width="1600" height="1060">
+    </div>
+  </div>
+</div>
+
+<!-- Fifth Grid -->
+<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+  <div class="w3-content">
+    <div class="w3-third w3-center">
+      <img src="https://images.unsplash.com/photo-1611601303737-6496949997cc?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=774&amp;q=80" alt="Photo by Meritt Thomas" style="width:90%" class="w3-hover-opacity">
+    </div>
+
+    <div class="w3-twothird">
+      <h1>Who Can Use It</h1>
+      <h5 class="w3-padding-32">Our door can be used for any pets that are able to be inside or outside.</h5>
+
+    </div>
+  </div>
+</div>
+
+<div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
+    <h1 class="w3-margin w3-xlarge">A True Friend Leaves Paw Prints On Your Heart</h1>
+</div>
+
+<!-- Footer. This section contains an ad for W3Schools Spaces. You can leave it to support us. -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity"> 
+  <div class="w3-xlarge w3-padding-32">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+ </div>
+ <!-- Footer end. -->
+ </footer>
+
+<script>
+// Used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+
+</body>
+</html>
