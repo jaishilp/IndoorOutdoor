@@ -140,7 +140,7 @@ img {
          <p class="w3-white w3-text-black w3-left-align">
       </p>
   <form action="placement" method="post">
-     {% for message in get_flashed_messages(category_filter=["message"])%}
+     {% for message in get_flashed_messages(category_filter=["placement"])%}
         <p>{{message}}</p>
     {% endfor %}
   <br>
