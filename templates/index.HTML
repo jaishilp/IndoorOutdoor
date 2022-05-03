@@ -66,7 +66,6 @@ img {
 {% for message in get_flashed_messages(category_filter=["upload"])%}
         <p>{{message}}</p>
     {% endfor %}
-
 <html>
    <body>
       <form action = "upload" method = "POST"

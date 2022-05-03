@@ -1,6 +1,5 @@
 import flask
 from flask import Flask, render_template, request, flash, redirect
-from flask_wtf import FlaskForm
 from wtforms import SubmitField, FileField
 from werkzeug.utils import secure_filename
 import os
@@ -10,11 +9,6 @@ from wtforms.validators import InputRequired
 
 app = Flask(__name__)
 app.secret_key = "Indoor Outdoor"
-
-
-class UploadFileForm(FlaskForm):
-    file = FileField("File", vailidators=InputRequired())
-    submit = SubmitField("Upload File")
 
 
 @app.route('/', methods=['GET', "POST"])
@@ -149,11 +143,21 @@ def data():
 def upload():
     if request.method == 'POST':
         f = request.files['file']
-        f.save(secure_filename("image.jpg"))
+        if checkext(f.filename):
+            f.save(secure_filename("image.png"))
+        else:
+            flash("Not a .png, .jpg, or .jpeg file!", "upload")
         flash("Enter Start Hour (24 Hour Format)", "startTime")
         flash("Enter End Hour (24 Hour Format)", "endTime")
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         return render_template("index.HTML")
+
+
+def checkext(filename):
+    if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        return True
+    else:
+        return False
 
 
 if 1 == 1:
