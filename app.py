@@ -154,21 +154,21 @@ def upload():
         return render_template("index.HTML")
     
 # placement button  
-@app.route("/Placement", methods=["POST", "GET"])
-def Placement():
+@app.route("/placement", methods=["POST", "GET"])
+def placement():
     flash("Enter Start Hour (24 Hour Format)", "startTime")
     flash("Enter End Hour (24 Hour Format)", "endTime")
     flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     if os.path.exists("Placement.txt"):
         with open('Placement.txt', 'r') as f:
             Placement = f.read()
-        if Placement == "in"
+        if Placement == "in":
             flash("Pet is inside", "placement")
         else:
             flash("Pet is outside", "placement") 
     else:
         flash("Error Reading", "placement") 
-        return render_template("index.HTML")
+    return render_template("index.HTML")
 
 
 
