@@ -145,6 +145,7 @@ def upload():
         f = request.files['file']
         if checkext(f.filename):
             f.save(secure_filename("image.png"))
+            flash("File \"" + f.filename + "\" Successfully Uploaded", "upload")
         else:
             flash("Not a .png, .jpg, or .jpeg file!", "upload")
         flash("Enter Start Hour (24 Hour Format)", "startTime")
