@@ -139,12 +139,12 @@ img {
          <p class="w3-opacity w3-center"><i></i></p>Click to see if your pet is inside or outside<br>
          <p class="w3-white w3-text-black w3-left-align">
       </p>
-  <form action="data" method="post">
+  <form action="placement" method="post">
      {% for message in get_flashed_messages(category_filter=["message"])%}
         <p>{{message}}</p>
     {% endfor %}
   <br>
-  <input type="submit" value="Placement" id="data">
+  <input type="submit" value="Placement" id="placement">
 </form>
     </div>
 <!-- About Us Grid -->
