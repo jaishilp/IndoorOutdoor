@@ -66,7 +66,6 @@ img {
 {% for message in get_flashed_messages(category_filter=["upload"])%}
         <p>{{message}}</p>
     {% endfor %}
-
 <html>
    <body>
       <form action = "upload" method = "POST"
@@ -134,6 +133,20 @@ img {
   <br>
   <input type="submit" value="Click to View Saved Times" id="data">
 </form>
+<!--Display dog placement-->
+<div class="w3-center w3-padding-32">
+      <h2 class="w3-wide w3-center">Where is Your Pet</h2>
+         <p class="w3-opacity w3-center"><i></i></p>Click to see if your pet is inside or outside<br>
+         <p class="w3-white w3-text-black w3-left-align">
+      </p>
+  <form action="placement" method="post">
+     {% for message in get_flashed_messages(category_filter=["placement"])%}
+        <p>{{message}}</p>
+    {% endfor %}
+  <br>
+  <input type="submit" value="Placement" id="placement">
+</form>
+    </div>
 <!-- About Us Grid -->
 <div class="w3-center w3-padding-32">
       <h2 class="w3-wide w3-center">About Us</h2>
