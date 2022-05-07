@@ -155,6 +155,7 @@ def upload():
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         return render_template("index.HTML")
 
+
 def get_minutes(minutes):
     if time
 
