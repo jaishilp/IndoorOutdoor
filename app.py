@@ -105,19 +105,19 @@ def lock():
         if lock_type == "in":
             lock_number = 4
             with open('Lock_Type.txt', 'w') as f:
-                f.write(lock_number)
+                f.write('4')
         elif lock_type == "out":
             lock_number = 3
             with open('Lock_Type.txt', 'w') as f:
-                f.write(lock_number)
+                f.write('3')
         elif lock_type == "both":
             lock_number = 2
             with open('Lock_Type.txt', 'w') as f:
-                f.write(lock_number)
+                f.write('2')
         elif lock_type == "locked":
             lock_number = 1
             with open('Lock_Type.txt', 'w') as f:
-                f.write(lock_number)
+                f.write('1')
 
     else:
         flash("Please Enter ONLY: In, Out, Both, or Locked", "lockType")
