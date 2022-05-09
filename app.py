@@ -102,8 +102,23 @@ def lock():
         flash("Enter Lock Type: In, Out, Both, or Locked\n Lock Saved: " + lock_type.capitalize(), "lockType")
         flash("Enter Start Hour (24 Hour Format)", "startTime")
         flash("Enter End Hour (24 Hour Format)", "endTime")
-        with open('Lock_Type.txt', 'w') as f:
-            f.write(lock_type)
+        if lock_type == "in":
+            lock_number = 4
+            with open('Lock_Type.txt', 'w') as f:
+                f.write(lock_number)
+        elif lock_type == "out":
+            lock_number = 3
+            with open('Lock_Type.txt', 'w') as f:
+                f.write(lock_number)
+        elif lock_type == "both":
+            lock_number = 2
+            with open('Lock_Type.txt', 'w') as f:
+                f.write(lock_number)
+        elif lock_type == "locked":
+            lock_number = 1
+            with open('Lock_Type.txt', 'w') as f:
+                f.write(lock_number)
+
     else:
         flash("Please Enter ONLY: In, Out, Both, or Locked", "lockType")
         flash("Enter Start Hour (24 Hour Format)", "startTime")
@@ -152,7 +167,8 @@ def upload():
         flash("Enter End Hour (24 Hour Format)", "endTime")
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         return render_template("index.HTML")
-    
+
+
 # placement button  
 @app.route("/placement", methods=["POST", "GET"])
 def placement():
@@ -165,11 +181,10 @@ def placement():
         if Placement == "in":
             flash("Pet is inside", "placement")
         else:
-            flash("Pet is outside", "placement") 
+            flash("Pet is outside", "placement")
     else:
-        flash("Error Reading", "placement") 
+        flash("Error Reading", "placement")
     return render_template("index.HTML")
-
 
 
 def checkext(filename):
@@ -177,7 +192,6 @@ def checkext(filename):
         return True
     else:
         return False
-
 
 if 1 == 1:
     port = int(os.environ.get('PORT', 5000))
