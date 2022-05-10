@@ -6,6 +6,9 @@ import os
 import os.path
 from werkzeug.utils import secure_filename
 from wtforms.validators import InputRequired
+import RPi.GPIO as GPIO
+from time import sleep
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "Indoor Outdoor"
@@ -176,11 +179,15 @@ def data():
         lockType = lock_name()
     else:
         flash("No Lock Type Found! Enter a Lock Type.", "message")
-    if os.path.exists("Start_Time_Hour.txt") and os.path.exists("Start_Time_Minute.txt") and os.path.exists("End_Time_Hour.txt") and os.path.exists("End_Time_Minute.txt") and os.path.exists("Lock_Type.txt"):
+    if os.path.exists("Start_Time_Hour.txt") and os.path.exists("Start_Time_Minute.txt") and os.path.exists(
+            "End_Time_Hour.txt") and os.path.exists("End_Time_Minute.txt") and os.path.exists("Lock_Type.txt"):
         lockInfo = "The door's lock type is " + lockType + " from " + startTime + " Hours to " + endTime + " Hours."
         with open('Final.txt', 'w') as z:
             z.write(lockInfo)
         flash(lockInfo, "message")
+        with open('Lock_Type.txt', 'r') as y3:
+            received = y3.read()
+            servo_test(received)
     return render_template("index.HTML")
 
 
@@ -243,6 +250,92 @@ def lock_name():
         return "Out Only"
     else:
         return "In Only"
+
+
+def servo_test(received):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(17, GPIO.OUT)
+    pwm = GPIO.PWM(17, 50)
+    pwm.start(0)
+    # NOTE: If
+    # creates the string and calls the serial address
+    # ser= serial.Serial('/dev/ttyACM0', 9600, timeout=5)
+
+    # read from the arduino
+    # input_str= ser.readline()
+    # print ( input_str.decode("utf-8").strip() )
+
+    # Input a number between 1 and 4 for received and currentPosition
+
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    print("Current Time =", current_time)
+
+    with open('Lock_Type.txt', 'r') as f:
+        received_file = f.read()
+
+    with open('Start_Time_Hour.txt', 'r') as x:
+        start_time_hour = x.read()
+
+    with open('Start_Time_Minute.txt', 'r') as x1:
+        start_time_minutes = x1.read()
+
+    with open('End_Time_Hour.txt', 'r') as y:
+        end_time_hour = y.read()
+
+    with open('End_Time_Minute.txt', 'r') as y2:
+        end_time_minutes = y2.read()
+
+    with open('Current.txt', 'r') as f2:
+        Current = f2.read()
+
+    time_start_hour = int(start_time_hour)
+    time_start_minutes = int(start_time_minutes)
+    time_end_hour = int(end_time_hour)
+    time_end_minutes = int(end_time_minutes)
+    received = int(received_file)
+    currentPosition = Current    # POSITION_UPDATE	#to close the system, make currentPosition=POSITION_UPDATE.Input values for Demo Mode and make recieved a value inputted from website
+
+    movement = received - currentPosition  # Determine the number of lock spaces need to move
+
+    # Website Lock Codes
+
+    L_1 = 1  # Fully Locked Position
+    R_1 = 1
+    L_2 = 2  # Fully Opened Position
+    R_2 = 2
+    L_3 = 3  # One Way Out Position
+    R_3 = 3
+    L_4 = 4  # One Way In Position
+    R_4 = 4
+
+    direction = 0
+    x = 0
+
+    for x in range(1):
+
+        # if movement == 0:
+        # rint("PICK A DIFFERNT LOCK	TYPE")
+
+        if movement < 0:
+            pwm.ChangeDutyCycle(1.5)  # (counter-clockwise) left (-90*)
+            sleep(8 * abs(movement))
+    else:
+
+        if movement > 0:
+            pwm.ChangeDutyCycle(12.5)  # (clockwise) (90*) right
+            sleep(8 * abs(movement))
+
+    # Clockwise = right movement (90*)
+    # Counterclockwise = left Movement (-90*)
+
+    pwm.ChangeDutyCycle(0)  # stop
+
+    pwm.stop
+    POSITION_UPDATE = received
+    with open('Current.txt', 'w') as x:
+        x.write(received)
+    GPIO.cleanup
 
 
 if 1 == 1:
