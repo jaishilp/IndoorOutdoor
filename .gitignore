@@ -1,8 +1,10 @@
 # Project exclude paths
 /venv/
-End_Time.txt
+End_Time_Hour.txt
+End_Time_Minute.txt
 Final.txt
 Lock_Type.txt
-Start_Time.txt
+Start_Time_Hour.txt
+Start_Time_Minute.txt
 image.png
 Placement.txt

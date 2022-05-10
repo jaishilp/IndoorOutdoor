@@ -6,10 +6,6 @@ import os
 import os.path
 from werkzeug.utils import secure_filename
 from wtforms.validators import InputRequired
-import RPi.GPIO as GPIO
-from time import sleep 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(17,GPIO.OUT)
 
 app = Flask(__name__)
 app.secret_key = "Indoor Outdoor"
@@ -17,8 +13,8 @@ app.secret_key = "Indoor Outdoor"
 
 @app.route('/', methods=['GET', "POST"])
 def index():
-    flash("Enter Start Hour (24 Hour Format)", "startTime")
-    flash("Enter End Hour (24 Hour Format)", "endTime")
+    flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+    flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
     flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     return render_template("index.HTML")
 
@@ -26,74 +22,100 @@ def index():
 @app.route("/start", methods=["POST", "GET"])
 def start():
     start_time = request.form['start_time_input']
+    start_hour = get_hour(start_time)
+    start_minutes = get_minutes(start_time)
     try:
-        int(start_time)
+        int(start_hour)
+        int(start_minutes)
     except:
-        flash("Enter Start Hour (24 Hour Format)\nPLEASE ENTER 24 HOUR TIME ONLY", "startTime")
-        flash("Enter End Hour (24 Hour Format)", "endTime")
+        flash("Enter Start Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "startTime")
+        flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     else:
-        if 0 <= int(start_time) <= 24:
-            with open('Start_Time.txt', 'w') as f:
-                f.write(start_time)
-            if 13 <= int(start_time) <= 23:
-                disp_time = int(start_time) - 12
-                flash("Enter Start Hour (24 Hour Format)\n Time Saved: " + str(disp_time) + "PM", "startTime")
-                flash("Enter End Hour (24 Hour Format)", "endTime")
+        if 0 <= int(start_hour) <= 24:
+            with open('Start_Time_Hour.txt', 'w') as f:
+                f.write(start_hour)
+            if 0 <= int(start_minutes) <= 59:
+                with open('Start_Time_Minute.txt', 'w') as x:
+                    x.write(start_minutes)
+            else:
+                flash("Enter Start Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "startTime")
+                flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
-            elif int(start_time) == 24 or int(start_time) == 0:
-                flash("Enter Start Hour (24 Hour Format)\n Time Saved: " + "12AM", "startTime")
-                flash("Enter End Hour (24 Hour Format)", "endTime")
+            if 13 <= int(start_hour) <= 23:
+                disp_time = str(int(start_hour) - 12) + ":" + start_minutes
+                flash("Enter Start Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "PM", "startTime")
+                flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
-            elif int(start_time) == 12:
-                flash("Enter Start Hour (24 Hour Format)\n Time Saved: " + "12PM", "startTime")
-                flash("Enter End Hour (24 Hour Format)", "endTime")
+            elif int(start_hour) == 24 or int(start_hour) == 0:
+                disp_time = start_hour + ":" + start_minutes
+                flash("Enter Start Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "AM", "startTime")
+                flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
+                flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
+            elif int(start_hour) == 12:
+                disp_time = start_hour + ":" + start_minutes
+                flash("Enter Start Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "PM", "startTime")
+                flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
             else:
-                flash("Enter Start Hour (24 Hour Format)\n Time Saved: " + start_time + "AM", "startTime")
-                flash("Enter End Hour (24 Hour Format)", "endTime")
+                disp_time = start_hour + ":" + start_minutes
+                flash("Enter Start Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "AM", "startTime")
+                flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         else:
-            flash("Enter Start Hour (24 Hour Format)\nPLEASE ENTER 24 HOUR TIME ONLY", "startTime")
-            flash("Enter End Hour (24 Hour Format)", "endTime")
+            flash("Enter Start Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "startTime")
+            flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
             flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
-    print(start_time)
+    print(start_hour)
     return render_template("index.HTML")
 
 
 @app.route("/end", methods=["POST", "GET"])
 def end():
     end_time = request.form['end_time_input']
+    end_hour = get_hour(end_time)
+    end_minutes = get_minutes(end_time)
     try:
-        int(end_time)
+        int(end_hour)
+        int(end_minutes)
     except:
-        flash("Enter End Hour (24 Hour Format)\nPLEASE ENTER 24 HOUR TIME ONLY", "endTime")
-        flash("Enter Start Hour (24 Hour Format)", "startTime")
+        flash("Enter End Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "endTime")
+        flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     else:
-        if 0 <= int(end_time) <= 24:
-            with open('End_Time.txt', 'w') as f:
-                f.write(end_time)
-            if 13 <= int(end_time) <= 23:
-                disp_time = int(end_time) - 12
-                flash("Enter End Hour (24 Hour Format)\n Time Saved: " + str(disp_time) + "PM", "endTime")
-                flash("Enter Start Hour (24 Hour Format)", "startTime")
+        if 0 <= int(end_hour) <= 24:
+            with open('End_Time_Hour.txt', 'w') as f:
+                f.write(end_hour)
+            if 0 <= int(end_minutes) <= 59:
+                with open('End_Time_Minute.txt', 'w') as x:
+                    x.write(end_minutes)
+            else:
+                flash("Enter End Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "endTime")
+                flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
-            elif int(end_time) == 24 or int(end_time) == 0:
-                flash("Enter End Hour (24 Hour Format)\n Time Saved: " + "12AM", "endTime")
-                flash("Enter Start Hour (24 Hour Format)", "startTime")
+            if 13 <= int(end_hour) <= 23:
+                disp_time = str(int(end_hour) - 12) + ":" + end_minutes
+                flash("Enter End Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "PM", "endTime")
+                flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+                flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
+            elif int(end_hour) == 24 or int(end_hour) == 0:
+                disp_time = "12:" + end_minutes
+                flash("Enter End Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "AM", "endTime")
+                flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockTy  pe")
-            elif int(end_time) == 12:
-                flash("Enter End Hour (24 Hour Format)\n Time Saved: " + "12PM", "endTime")
-                flash("Enter Start Hour (24 Hour Format)", "startTime")
+            elif int(end_hour) == 12:
+                disp_time = end_hour + ":" + end_minutes
+                flash("Enter End Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "PM", "endTime")
+                flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
             else:
-                flash("Enter End Hour (24 Hour Format)\n Time Saved: " + end_time + "AM", "endTime")
-                flash("Enter Start Hour (24 Hour Format)", "startTime")
+                disp_time = end_hour + ":" + end_minutes
+                flash("Enter End Hour (24 Hour Format HH:MM)\n Time Saved: " + disp_time + "AM", "endTime")
+                flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
                 flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         else:
-            flash("Enter End Hour (24 Hour Format)\nPLEASE ENTER 24 HOUR TIME ONLY", "endTime")
-            flash("Enter Start Hour (24 Hour Format)", "startTime")
+            flash("Enter End Hour (24 Hour Format HH:MM)\nPLEASE ENTER 24 HOUR TIME ONLY", "endTime")
+            flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
             flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     return render_template("index.HTML")
 
@@ -104,8 +126,8 @@ def lock():
     print(lock_type)
     if lock_type == "in" or lock_type == "out" or lock_type == "both" or lock_type == "locked":
         flash("Enter Lock Type: In, Out, Both, or Locked\n Lock Saved: " + lock_type.capitalize(), "lockType")
-        flash("Enter Start Hour (24 Hour Format)", "startTime")
-        flash("Enter End Hour (24 Hour Format)", "endTime")
+        flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+        flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
         if lock_type == "in":
             lock_number = 4
             with open('Lock_Type.txt', 'w') as f:
@@ -122,40 +144,43 @@ def lock():
             lock_number = 1
             with open('Lock_Type.txt', 'w') as f:
                 f.write('1')
-
     else:
         flash("Please Enter ONLY: In, Out, Both, or Locked", "lockType")
-        flash("Enter Start Hour (24 Hour Format)", "startTime")
-        flash("Enter End Hour (24 Hour Format)", "endTime")
+        flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+        flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
     return render_template("index.HTML")
 
 
 @app.route("/data", methods=["POST", "GET"])
 def data():
-    flash("Enter Start Hour (24 Hour Format)", "startTime")
-    flash("Enter End Hour (24 Hour Format)", "endTime")
+    flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+    flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
     flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
-    if os.path.exists("Start_Time.txt"):
-        with open('Start_Time.txt', 'r') as f:
-            startTime = f.read()
+    if os.path.exists("Start_Time_Hour.txt") and os.path.exists("Start_Time_Minute.txt"):
+        with open('Start_Time_Hour.txt', 'r') as f1:
+            starthour = f1.read()
+        with open('Start_Time_Minute.txt', 'r') as f2:
+            startminute = f2.read()
+        startTime = starthour + ':' + startminute
     else:
         flash("No Start Time Found! Enter a Start Time.", "message")
-    if os.path.exists("End_Time.txt"):
-        with open('End_Time.txt', 'r') as x:
-            endTime = x.read()
+    if os.path.exists("End_Time_Hour.txt") and os.path.exists("End_Time_Minute.txt"):
+        with open('End_Time_Hour.txt', 'r') as x1:
+            endhour = x1.read()
+        with open('End_Time_Minute.txt', 'r') as x2:
+            endminute = x2.read()
+        endTime = endhour + ':' + endminute
     else:
         flash("No End Time Found! Enter a End Time.", "message")
     if os.path.exists("Lock_Type.txt"):
-        with open('Lock_Type.txt', 'r') as y:
-            lockType = y.read()
+        lockType = lock_name()
     else:
         flash("No Lock Type Found! Enter a Lock Type.", "message")
-    if os.path.exists("Start_Time.txt") and os.path.exists("End_Time.txt") and os.path.exists("Lock_Type.txt"):
-        lockInfo = "The door's lock type is " + lockType + " from " + startTime + "00 Hours to " + endTime + "00 Hours."
+    if os.path.exists("Start_Time_Hour.txt") and os.path.exists("Start_Time_Minute.txt") and os.path.exists("End_Time_Hour.txt") and os.path.exists("End_Time_Minute.txt") and os.path.exists("Lock_Type.txt"):
+        lockInfo = "The door's lock type is " + lockType + " from " + startTime + " Hours to " + endTime + " Hours."
         with open('Final.txt', 'w') as z:
             z.write(lockInfo)
         flash(lockInfo, "message")
-    servo_run()
     return render_template("index.HTML")
 
 
@@ -163,13 +188,13 @@ def data():
 def upload():
     if request.method == 'POST':
         f = request.files['file']
-        if checkext(f.filename):
+        if check_extension(f.filename):
             f.save(secure_filename("image.png"))
             flash("File \"" + f.filename + "\" Successfully Uploaded", "upload")
         else:
             flash("Not a .png, .jpg, or .jpeg file!", "upload")
-        flash("Enter Start Hour (24 Hour Format)", "startTime")
-        flash("Enter End Hour (24 Hour Format)", "endTime")
+        flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+        flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
         flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
         return render_template("index.HTML")
 
@@ -177,8 +202,8 @@ def upload():
 # placement button  
 @app.route("/placement", methods=["POST", "GET"])
 def placement():
-    flash("Enter Start Hour (24 Hour Format)", "startTime")
-    flash("Enter End Hour (24 Hour Format)", "endTime")
+    flash("Enter Start Hour (24 Hour Format HH:MM)", "startTime")
+    flash("Enter End Hour (24 Hour Format HH:MM)", "endTime")
     flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     if os.path.exists("Placement.txt"):
         with open('Placement.txt', 'r') as f:
@@ -192,84 +217,33 @@ def placement():
     return render_template("index.HTML")
 
 
-def checkext(filename):
+def check_extension(filename):
     if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
         return True
     else:
         return False
-        
-def servo_run():
-    
-    pwm=GPIO.PWM(17,50) 
-    pwm.start(0)
-    #NOTE: If 
-    #creates the string and calls the serial address
-    #ser= serial.Serial('/dev/ttyACM0', 9600, timeout=5)
-
-    #read from the arduino
-    #input_str= ser.readline()
-    #print ( input_str.decode("utf-8").strip() )
-
-    # Input a number between 1 to 4 for recieved and currentPosition
-
-    with open ('Lock_Type.txt','r') as f:
-        recieved_file= f.read() 
-        
-    with open('Start_Time.txt','r') as x:
-        start_time = x.read()
-        
-    with open('End_Time.txt','r') as y:
-        end_time = y.read()
-
-    time_start = int(start_time)
-    time_end = int(end_time)
-    recieved = int(recieved_file)
-    POSITION_UPDATE = 3
-    currentPosition = POSITION_UPDATE	#to close the system, make currentPosition=POSITION_UPDATE.Input values for Demo Mode and make recieved a value inputted from website
 
 
-    movement=recieved-currentPosition #Determine the number of lock spaces need to move
+def get_hour(time_in):
+    return time_in[:-3]
 
-    # Website Lock Codes
 
-    L_1 = 1 #Fully Locked Position
-    R_1 = 1
-    L_2 = 2 #Fully Opened Position
-    R_2 = 2
-    L_3 = 3 #One Way Out Position
-    R_3 = 3
-    L_4 = 4 #One Way In Position
-    R_4 = 4
+def get_minutes(time_in):
+    return time_in[-2:]
 
-    direction = 0
-    x = 0
 
-    for x in range(1):
-        
-        #if movement == 0:
-            #rint("PICK A DIFFERNT LOCK	TYPE")
-
-        
-        if movement <	0:
-            pwm.ChangeDutyCycle(1.5) # (counter-clockwise) left (-90*)
-            sleep(8* abs(movement))
+def lock_name():
+    with open('Lock_Type.txt', 'r') as y:
+        lockType = y.read()
+    if int(lockType) == 1:
+        return "Completely Locked"
+    elif int(lockType) == 2:
+        return "Open Both Ways"
+    elif int(lockType) == 3:
+        return "Out Only"
     else:
-        
-         if movement >	0:	
-             pwm.ChangeDutyCycle(12.5) # (clockwise) (90*) right
-             sleep(8* abs(movement))
-        
-        
-       #Clockwise = right movement (90*)
-       #Counterclockwise = left Movement (-90*)
-     
+        return "In Only"
 
-    pwm.ChangeDutyCycle(0) #stop
-
-    pwm.stop 
-    POSITION_UPDATE = recieved
-    GPIO.cleanup             
-        
 
 if 1 == 1:
     port = int(os.environ.get('PORT', 5000))
