@@ -6,7 +6,7 @@ import os
 import os.path
 from werkzeug.utils import secure_filename
 from wtforms.validators import InputRequired
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from time import sleep
 from datetime import datetime
 
