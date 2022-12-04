@@ -21,6 +21,9 @@ def index():
     flash("Enter Lock Type: In, Out, Both, or Locked", "lockType")
     return render_template("index.HTML")
 
+@app.route('/ws', methods=['GET', "POST"])
+def ws():
+    return render_template("ws.html")
 
 @app.route("/start", methods=["POST", "GET"])
 def start():
